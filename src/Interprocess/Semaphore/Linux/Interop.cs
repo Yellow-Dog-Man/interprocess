@@ -30,6 +30,7 @@ internal static partial class Interop
         if (handle != IntPtr.Zero)
             return handle;
 
+#pragma warning disable RCS1198 // Avoid unnecessary boxing of value type
         throw Error switch
         {
             EINVAL => new ArgumentException(
@@ -43,6 +44,7 @@ internal static partial class Interop
             ENOMEM => new InsufficientMemoryException(),
             _ => new PosixSemaphoreException(Error),
         };
+#pragma warning restore RCS1198 // Avoid unnecessary boxing of value type
     }
 
     internal static void Release(IntPtr handle)
@@ -136,6 +138,8 @@ internal static partial class Interop
         };
     }
 
+#if NET9_0_OR_GREATER
+
     [LibraryImport(Lib, EntryPoint = "sem_open", SetLastError = true, StringMarshalling = StringMarshalling.Utf8)]
     private static partial IntPtr SemaphoreOpen(string name, int oflag, uint mode, uint value);
 
@@ -156,4 +160,28 @@ internal static partial class Interop
 
     [LibraryImport(Lib, EntryPoint = "sem_close", SetLastError = true)]
     private static partial int SemaphoreClose(IntPtr handle);
+
+#else
+
+    [DllImport(Lib, EntryPoint = "sem_open", SetLastError = true, CharSet = CharSet.Ansi)]
+    private static extern IntPtr SemaphoreOpen(string name, int oflag, uint mode, uint value);
+
+    [DllImport(Lib, EntryPoint = "sem_post", SetLastError = true)]
+    private static extern int SemaphorePost(IntPtr handle);
+
+    [DllImport(Lib, EntryPoint = "sem_wait", SetLastError = true)]
+    private static extern int SemaphoreWait(IntPtr handle);
+
+    [DllImport(Lib, EntryPoint = "sem_trywait", SetLastError = true)]
+    private static extern int SemaphoreTryWait(IntPtr handle);
+
+    [DllImport(Lib, EntryPoint = "sem_timedwait", SetLastError = true)]
+    private static extern int SemaphoreTimedWait(IntPtr handle, ref PosixTimespec abs_timeout);
+
+    [DllImport(Lib, EntryPoint = "sem_unlink", SetLastError = true, CharSet = CharSet.Ansi)]
+    private static extern int SemaphoreUnlink(string name);
+
+    [DllImport(Lib, EntryPoint = "sem_close", SetLastError = true)]
+    private static extern int SemaphoreClose(IntPtr handle);
+#endif
 }

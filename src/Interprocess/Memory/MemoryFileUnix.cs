@@ -4,8 +4,10 @@ namespace Cloudtoid.Interprocess.Memory.Unix;
 
 internal sealed class MemoryFileUnix : IMemoryFile
 {
+#pragma warning disable RCS1213 // Remove unused member declaration
     private const FileAccess FileAccessOption = FileAccess.ReadWrite;
     private const FileShare FileShareOption = FileShare.ReadWrite | FileShare.Delete;
+#pragma warning restore RCS1213 // Remove unused member declaration
     private const string Folder = ".cloudtoid/interprocess/mmf";
     private const string FileExtension = ".qu";
     private const int BufferSize = 0x1000;
@@ -19,6 +21,7 @@ internal sealed class MemoryFileUnix : IMemoryFile
         Directory.CreateDirectory(file);
         file = Path.Combine(file, options.QueueName + FileExtension);
 
+#if NET9_0_OR_GREATER
         FileStream stream;
 
         if (IsFileInUse(file))
@@ -36,7 +39,6 @@ internal sealed class MemoryFileUnix : IMemoryFile
         else
         {
             // override (or create if no longer exist) as it is not being used
-
             stream = new FileStream(
                 file,
                 FileMode.Create,
@@ -45,9 +47,11 @@ internal sealed class MemoryFileUnix : IMemoryFile
                 BufferSize);
 #pragma warning restore CA2000
         }
+#endif
 
         try
         {
+#if NET9_0_OR_GREATER
             MappedFile = MemoryMappedFile.CreateFromFile(
                 stream,
                 mapName: null, // do not set this or it will not work on Linux/Unix/MacOS
@@ -55,6 +59,15 @@ internal sealed class MemoryFileUnix : IMemoryFile
                 MemoryMappedFileAccess.ReadWrite,
                 HandleInheritability.None,
                 false);
+#else
+            MappedFile = MemoryMappedFile.CreateFromFile(
+                file,
+                FileMode.OpenOrCreate,
+                mapName: null,
+                BufferSize,
+                MemoryMappedFileAccess.ReadWrite);
+#endif
+
         }
         catch
         {
@@ -62,7 +75,9 @@ internal sealed class MemoryFileUnix : IMemoryFile
 
             try
             {
+#if NET9_0_OR_GREATER
                 stream.Dispose();
+#endif
             }
             catch
             {

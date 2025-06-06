@@ -16,7 +16,9 @@ public class XunitLogger(ITestOutputHelper testOutputHelper, string categoryName
         Exception? exception,
         Func<TState, Exception?, string> formatter)
     {
+#pragma warning disable RCS1198 // Avoid unnecessary boxing of value type
         var message = $"{categoryName} [{eventId}] {formatter(state, exception)}";
+#pragma warning restore RCS1198 // Avoid unnecessary boxing of value type
         testOutputHelper.WriteLine(message);
         if (exception is not null)
             testOutputHelper.WriteLine(exception.ToString());

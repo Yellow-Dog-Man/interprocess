@@ -13,5 +13,6 @@
         "Timespec",
         "Xeon",
         "Xunit"
-    ]
+    ],
+    "dotnet.testWindow.skipTargetFrameworkCompatibilityCheck": true
 }

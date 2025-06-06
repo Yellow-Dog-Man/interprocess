@@ -19,7 +19,10 @@ internal readonly struct ValueStopwatch
             throw new InvalidOperationException(
                 "An uninitialized, or 'default', ValueStopwatch cannot be used to get elapsed time.");
         }
-
+#if NET9_0_OR_GREATER
         return Stopwatch.GetElapsedTime(start);
+#else
+        return TimeSpan.FromTicks(Stopwatch.GetTimestamp() - start);
+#endif
     }
 }

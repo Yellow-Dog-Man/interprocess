@@ -9,7 +9,9 @@ internal class PosixSemaphoreException
     }
 
     public PosixSemaphoreException(int errorCode)
+#pragma warning disable RCS1198 // Avoid unnecessary boxing of value type
         : base($"Semaphore exception with inner code = {errorCode}")
+#pragma warning restore RCS1198 // Avoid unnecessary boxing of value type
     {
     }
 }

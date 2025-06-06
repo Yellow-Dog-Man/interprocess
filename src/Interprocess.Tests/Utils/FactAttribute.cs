@@ -19,7 +19,9 @@ public sealed class FactAttribute : Xunit.FactAttribute
                 return base.Skip;
 
             if ((Platforms & CurrentPlatform) == 0)
+#pragma warning disable RCS1198 // Avoid unnecessary boxing of value type
                 return $"Skipped on {CurrentPlatform}";
+#pragma warning restore RCS1198 // Avoid unnecessary boxing of value type
 
             return null;
         }
@@ -37,9 +39,10 @@ public sealed class FactAttribute : Xunit.FactAttribute
         if (RuntimeInformation.IsOSPlatform(OSPlatform.OSX))
             return Platform.OSX;
 
-        if (RuntimeInformation.IsOSPlatform(OSPlatform.FreeBSD))
+#if NET9_0_OR_GREATER
+        if (RuntimeInformation.IsOSPlatform(OSPlatform.FreeBSD)) // No FreeBSD support on older .NET :(
             return Platform.FreeBSD;
-
+#endif
         return null;
     }
 }

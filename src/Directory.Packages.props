@@ -7,7 +7,7 @@
     <PackageVersion Include="Cloudtoid.Framework" Version="1.0.121" />
     <PackageVersion Include="coverlet.collector" Version="6.0.2" />
     <PackageVersion Include="FluentAssertions" Version="7.0.0" />
-    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.5" />
     <PackageVersion Include="Microsoft.Extensions.Logging.Console" Version="9.0.0" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
     <PackageVersion Include="Microsoft.VisualStudio.Threading.Analyzers" Version="17.12.19" />
@@ -17,10 +17,22 @@
     <PackageVersion Include="StyleCop.Analyzers" Version="1.2.0-beta.556" />
     <PackageVersion Include="xunit.runner.visualstudio" Version="3.0.1" />
     <PackageVersion Include="xunit" Version="2.9.3" />
+    <PackageVersion Include="System.Memory" Version="4.6.3" />
+    <PackageVersion Include="Microsoft.Extensions.Logging" Version="9.0.5" />
+    <PackageVersion Include="PolySharp" Version="1.15.0"/>
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Cloudtoid.Framework" />
+    <PackageReference Include="System.Memory" />
+    <PackageReference Include="Microsoft.Extensions.Logging" />
+    <PackageReference Include="PolySharp">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+    <!-- <PackageReference Include="Cloudtoid.Framework" /> -->
+
+    <!-- <ProjectReference Include="../../framework/src/Cloudtoid.Framework/Cloudtoid.Framework.csproj" /> -->
+
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
     <PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers">
       <PrivateAssets>all</PrivateAssets>

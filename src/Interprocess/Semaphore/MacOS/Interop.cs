@@ -34,6 +34,7 @@ internal static partial class Interop
         if (handle != SemFailed)
             return handle;
 
+#pragma warning disable RCS1198 // Avoid unnecessary boxing of value type
         throw Error switch
         {
             EINVAL => new ArgumentException(
@@ -47,6 +48,7 @@ internal static partial class Interop
             ENOMEM => new InsufficientMemoryException(),
             _ => new PosixSemaphoreException(Error),
         };
+#pragma warning restore RCS1198 // Avoid unnecessary boxing of value type
     }
 
     internal static void Release(IntPtr handle)
@@ -138,6 +140,7 @@ internal static partial class Interop
         };
     }
 
+#if NET9_0_OR_GREATER
     [LibraryImport(Lib, EntryPoint = "sem_open", SetLastError = true, StringMarshalling = StringMarshalling.Utf8)]
     private static partial IntPtr SemaphoreOpen(
         string name,
@@ -165,4 +168,35 @@ internal static partial class Interop
 
     [LibraryImport(Lib, EntryPoint = "sem_close", SetLastError = true)]
     private static partial int SemaphoreClose(IntPtr handle);
+
+#else
+
+    [DllImport(Lib, EntryPoint = "sem_open", SetLastError = true, CharSet = CharSet.Ansi)]
+    private static extern IntPtr SemaphoreOpen(
+        string name,
+        int oflag,
+        ulong __x2,
+        ulong __x3,
+        ulong __x4,
+        ulong __x5,
+        ulong __x6,
+        ulong __x7,
+        ulong mode,
+        uint value);
+
+    [DllImport(Lib, EntryPoint = "sem_post", SetLastError = true)]
+    private static extern int SemaphorePost(IntPtr handle);
+
+    [DllImport(Lib, EntryPoint = "sem_wait", SetLastError = true)]
+    private static extern int SemaphoreWait(IntPtr handle);
+
+    [DllImport(Lib, EntryPoint = "sem_trywait", SetLastError = true)]
+    private static extern int SemaphoreTryWait(IntPtr handle);
+
+    [DllImport(Lib, EntryPoint = "sem_unlink", SetLastError = true, CharSet = CharSet.Ansi)]
+    private static extern int SemaphoreUnlink(string name);
+
+    [DllImport(Lib, EntryPoint = "sem_close", SetLastError = true)]
+    private static extern int SemaphoreClose(IntPtr handle);
+#endif
 }
