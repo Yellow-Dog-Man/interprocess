@@ -23,7 +23,7 @@
     <PackageVersion>2.0.$(VersionSuffix)</PackageVersion>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="../../../framework/src/Cloudtoid.Framework/Cloudtoid.Framework.csproj" />
+    <ProjectReference Include="../../framework/src/Cloudtoid.Framework/Cloudtoid.Framework.csproj" />
   </ItemGroup>
 
 </Project>
