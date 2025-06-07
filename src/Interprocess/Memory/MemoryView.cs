@@ -2,6 +2,7 @@ using System.IO.MemoryMappedFiles;
 using System.Runtime.InteropServices;
 using Cloudtoid.Interprocess.Memory.Unix;
 using Cloudtoid.Interprocess.Memory.Windows;
+using SysPath = System.IO.Path;
 
 namespace Cloudtoid.Interprocess;
 
@@ -13,29 +14,34 @@ internal sealed class MemoryView : IDisposable
 
     internal unsafe MemoryView(QueueOptions options, ILoggerFactory loggerFactory)
     {
-        file = RuntimeInformation.IsOSPlatform(OSPlatform.Windows)
+        // Check if the path is different from the default temp path and use the Unix one instead.
+        // This allows defining a custom map location, even on Windows. Though it's also useful for
+        // IPC via Wine/Proton as well since you can point it at /tmp, which resides in memory.
+
+        file =
+            RuntimeInformation.IsOSPlatform(OSPlatform.Windows) && SysPath.GetTempPath() == options.Path
             ? new MemoryFileWindows(options)
-            : new MemoryFileUnix(options, loggerFactory);
+            : new MemoryFileUnix(options, loggerFactory); // The Unix implementation actually appears compatible with Windows.
 
         try
-        {
-            view = file.MappedFile.CreateViewAccessor(0, 0, MemoryMappedFileAccess.ReadWrite);
-
-            try
             {
-                Pointer = AcquirePointer();
+                view = file.MappedFile.CreateViewAccessor(0, 0, MemoryMappedFileAccess.ReadWrite);
+
+                try
+                {
+                    Pointer = AcquirePointer();
+                }
+                catch
+                {
+                    view.Dispose();
+                    throw;
+                }
             }
             catch
             {
-                view.Dispose();
+                file.Dispose();
                 throw;
             }
-        }
-        catch
-        {
-            file.Dispose();
-            throw;
-        }
     }
 
     public unsafe byte* Pointer { get; }
