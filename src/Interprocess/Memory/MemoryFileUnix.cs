@@ -4,10 +4,10 @@ namespace Cloudtoid.Interprocess.Memory.Unix;
 
 internal sealed class MemoryFileUnix : IMemoryFile
 {
-    private const string Folder = ".cloudtoid/interprocess/mmf";
     private const string FileExtension = ".qu";
     private const string LockExtension = ".qulock";
     private const int BufferSize = 0x1000;
+    private static readonly string Folder = Path.Combine(".cloudtoid", "interprocess", "mmf");
     private readonly string file;
     private readonly string lockFile;
 #pragma warning disable CA2213 // Disposable fields should be disposed
@@ -22,7 +22,7 @@ internal sealed class MemoryFileUnix : IMemoryFile
         Directory.CreateDirectory(file);
         lockFile = Path.Combine(file, options.QueueName + LockExtension);
         file = Path.Combine(file, options.QueueName + FileExtension);
-        counter = new AtomicFileCounter(lockFile);
+        counter = new AtomicFileCounter(lockFile, _ => ResetBackingFile(), out _);
 
         try
         {
@@ -54,29 +54,22 @@ internal sealed class MemoryFileUnix : IMemoryFile
 
     private void Dispose(bool disposing)
     {
-        try
+        if (disposing)
         {
-            if (disposing)
-            {
-                MappedFile.Dispose();
-                counter.Dispose();
-            }
-        }
-        finally
-        {
-            ResetBackingFile();
+            MappedFile.Dispose();
+            counter.Dispose();
         }
     }
 
     private void ResetBackingFile()
     {
         // Deletes the backing file if it is not used by any other process
-        if (IsFileInUse())
-            return;
+        // if (IsFileInUse())
+        //     return;
 
         if (!PathUtil.TryDeleteFile(file) || !PathUtil.TryDeleteFile(lockFile))
             logger.FailedToDeleteSharedMemoryFile();
     }
 
-    private bool IsFileInUse() => counter.Value > 0;
+    // private bool IsFileInUse() => counter.Count > 0;
 }
