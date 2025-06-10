@@ -8,7 +8,7 @@ internal sealed class Subscriber : Queue, ISubscriber
     private readonly IInterprocessSemaphoreWaiter signal;
 
     internal Subscriber(QueueOptions options, ILoggerFactory loggerFactory)
-        : base(options, loggerFactory) => signal = InterprocessSemaphore.CreateWaiter(options.QueueName);
+        : base(options, loggerFactory) => signal = InterprocessSemaphore.CreateWaiter(options.MemoryViewName);
 
     public bool TryDequeue(CancellationToken cancellation, out ReadOnlyMemory<byte> message) =>
         TryDequeueCore(default, cancellation, out message);

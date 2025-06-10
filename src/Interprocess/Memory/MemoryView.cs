@@ -7,12 +7,12 @@ using SysPath = System.IO.Path;
 namespace Cloudtoid.Interprocess;
 
 // This class manages the underlying Memory Mapped File
-internal sealed class MemoryView : IDisposable
+public sealed class MemoryView : IDisposable
 {
     private readonly IMemoryFile file;
     private readonly MemoryMappedViewAccessor view;
 
-    internal unsafe MemoryView(QueueOptions options, ILoggerFactory loggerFactory)
+    public unsafe MemoryView(MemoryViewOptions options, ILoggerFactory loggerFactory)
     {
         // Check if the path is different from the default temp path and use the Unix one instead.
         // This allows defining a custom map location, even on Windows. Though it's also useful for
@@ -44,7 +44,11 @@ internal sealed class MemoryView : IDisposable
             }
     }
 
+#pragma warning disable CA1720 // This is quite literally... a pointer.
     public unsafe byte* Pointer { get; }
+#pragma warning restore CA1720
+
+    public unsafe Span<byte> Data => new(Pointer, (int)view.Capacity);
 
     public void Dispose()
     {
