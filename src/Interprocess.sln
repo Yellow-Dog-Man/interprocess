@@ -23,7 +23,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{A178B233
 		..\.github\workflows\publish.yml = ..\.github\workflows\publish.yml
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cloudtoid.Framework", "..\..\framework\src\Cloudtoid.Framework\Cloudtoid.Framework.csproj", "{3BF5BD00-4041-47FE-ADC5-EE2375BB24D0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cloudtoid.Framework", "..\framework\src\Cloudtoid.Framework\Cloudtoid.Framework.csproj", "{3BF5BD00-4041-47FE-ADC5-EE2375BB24D0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
