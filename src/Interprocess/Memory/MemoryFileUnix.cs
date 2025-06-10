@@ -15,13 +15,13 @@ internal sealed class MemoryFileUnix : IMemoryFile
 #pragma warning restore CA2213 // Disposable fields should be disposed
     private readonly ILogger<MemoryFileUnix> logger;
 
-    internal MemoryFileUnix(QueueOptions options, ILoggerFactory loggerFactory)
+    internal MemoryFileUnix(MemoryViewOptions options, ILoggerFactory loggerFactory)
     {
         logger = loggerFactory.CreateLogger<MemoryFileUnix>();
         file = Path.Combine(options.Path, Folder);
         Directory.CreateDirectory(file);
-        lockFile = Path.Combine(file, options.QueueName + LockExtension);
-        file = Path.Combine(file, options.QueueName + FileExtension);
+        lockFile = Path.Combine(file, options.MemoryViewName + LockExtension);
+        file = Path.Combine(file, options.MemoryViewName + FileExtension);
         counter = new AtomicFileCounter(lockFile, _ => ResetBackingFile(), out _);
 
         try
