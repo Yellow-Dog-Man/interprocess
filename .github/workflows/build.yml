@@ -16,11 +16,11 @@ jobs:
     name: Build and Test on ${{ matrix.os }}
 
     steps:
-
-      - name: Checkout
-        uses: actions/checkout@v4
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
         with:
-          submodules: true
+          dotnet-version: |
+            9.0.x
 
       - if: runner.os == 'Linux'
         name: Setup Mono runtime
@@ -31,11 +31,10 @@ jobs:
           sudo apt update
           sudo apt install mono-complete
 
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v4
+      - name: Checkout
+        uses: actions/checkout@v4
         with:
-          dotnet-version: |
-            9.0.x
+          submodules: true
 
       - name: Build and Test
         run: dotnet test src/Interprocess.sln
