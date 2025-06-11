@@ -5,7 +5,7 @@ internal sealed class Publisher : Queue, IPublisher
     private readonly IInterprocessSemaphoreReleaser signal;
 
     internal Publisher(QueueOptions options, ILoggerFactory loggerFactory)
-        : base(options, loggerFactory) => signal = InterprocessSemaphore.CreateReleaser(options.QueueName);
+        : base(options, loggerFactory) => signal = InterprocessSemaphore.CreateReleaser(options.MemoryViewName);
 
     public unsafe bool TryEnqueue(ReadOnlySpan<byte> message)
     {

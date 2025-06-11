@@ -6,15 +6,15 @@ internal sealed class MemoryFileWindows : IMemoryFile
 {
     private const string MapNamePrefix = "CT_IP_";
 
-    internal MemoryFileWindows(QueueOptions options)
+    internal MemoryFileWindows(MemoryViewOptions options)
     {
 #if NET5_0_OR_GREATER
         if (!OperatingSystem.IsWindows())
             throw new PlatformNotSupportedException();
 #endif
         MappedFile = MemoryMappedFile.CreateOrOpen(
-            mapName: MapNamePrefix + options.QueueName,
-            options.GetQueueStorageSize(),
+            mapName: MapNamePrefix + options.MemoryViewName,
+            options.GetActualStorageSize(),
             MemoryMappedFileAccess.ReadWrite,
             MemoryMappedFileOptions.None,
             HandleInheritability.None);
