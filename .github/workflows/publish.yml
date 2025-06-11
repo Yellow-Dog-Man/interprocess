@@ -1,18 +1,21 @@
 name: publish
 
 on:
-  push:
-    branches: [ main ]
-  
+  workflow_dispatch:
+
+  release:
+    types: [published]
+
 jobs:
   build:
+
     runs-on: ubuntu-latest
     name: Build Test Pack and Publish
     steps:
 
       - name: Checkout
         uses: actions/checkout@v4
-   
+
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
@@ -29,4 +32,4 @@ jobs:
         run: dotnet pack -c Release --no-build --output . --version-suffix ${{github.run_number}} src/Interprocess/Interprocess.csproj 
 
       - name: Push
-        run: dotnet nuget push Cloudtoid.Interprocess.*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.nuget_org_api_key }}
+        run: dotnet nuget push Cloudtoid.Interprocess.*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_TOKEN }}
