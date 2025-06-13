@@ -14,6 +14,7 @@ internal sealed class MemoryFileUnix : IMemoryFile
     private readonly AtomicFileCounter counter; // This is disposed, the compiler is just silly.
 #pragma warning restore CA2213 // Disposable fields should be disposed
     private readonly ILogger<MemoryFileUnix> logger;
+    private readonly FileStream? stream;
 
     internal MemoryFileUnix(MemoryViewOptions options, ILoggerFactory loggerFactory)
     {
@@ -26,12 +27,26 @@ internal sealed class MemoryFileUnix : IMemoryFile
 
         try
         {
-            MappedFile = MemoryMappedFile.CreateFromFile(
-                file,
-                FileMode.OpenOrCreate,
-                mapName: null,
-                BufferSize,
-                MemoryMappedFileAccess.ReadWrite);
+            if (AtomicFileCounter.IsMonoUnderLinux)
+            {
+                MappedFile = MemoryMappedFile.CreateFromFile(
+                    file,
+                    FileMode.OpenOrCreate,
+                    null,
+                    BufferSize,
+                    MemoryMappedFileAccess.ReadWrite);
+            }
+            else
+            {
+                stream = new(file, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite);
+                MappedFile = MemoryMappedFile.CreateFromFile(
+                    stream,
+                    mapName: null,
+                    BufferSize,
+                    MemoryMappedFileAccess.ReadWrite,
+                    HandleInheritability.None,
+                    false);
+            }
         }
         catch
         {
@@ -58,6 +73,7 @@ internal sealed class MemoryFileUnix : IMemoryFile
         {
             MappedFile.Dispose();
             counter.Dispose();
+            stream?.Dispose();
         }
     }
 

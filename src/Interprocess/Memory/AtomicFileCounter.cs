@@ -12,12 +12,16 @@ namespace Cloudtoid.Interprocess.Memory.Unix;
 /// </summary>
 public sealed class AtomicFileCounter : IDisposable
 {
+    internal static readonly bool IsMonoUnderLinux = Type.GetType("Mono.Runtime") is not null
+        && Environment.OSVersion.Platform == PlatformID.Unix;
+
     private readonly string path;
     private readonly MemoryMappedFile file;
     private readonly MemoryMappedViewAccessor accessor;
     private readonly unsafe byte* ptr;
     private readonly Action<string>? cb;
     private readonly Mutex locker;
+    private readonly FileStream? stream;
     private int disposed;
 
     /// <summary>
@@ -33,14 +37,29 @@ public sealed class AtomicFileCounter : IDisposable
         locker = new(false, path.Replace('/', '_').Replace('\\', '_'));
         this.path = path;
         cb = callback;
+
         if (locker.WaitOne())
         {
-            file = MemoryMappedFile.CreateFromFile(
-                this.path,
-                FileMode.OpenOrCreate,
-                null,
-                4,
-                MemoryMappedFileAccess.ReadWrite);
+            if (IsMonoUnderLinux)
+            {
+                file = MemoryMappedFile.CreateFromFile(
+                    this.path,
+                    FileMode.OpenOrCreate,
+                    null,
+                    4,
+                    MemoryMappedFileAccess.ReadWrite);
+            }
+            else
+            {
+                stream = new(this.path, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite);
+                file = MemoryMappedFile.CreateFromFile(
+                    stream,
+                    null,
+                    4,
+                    MemoryMappedFileAccess.ReadWrite,
+                    HandleInheritability.None,
+                    false);
+            }
 
             accessor = file.CreateViewAccessor();
             accessor.SafeMemoryMappedViewHandle.AcquirePointer(ref ptr);
@@ -84,5 +103,6 @@ public sealed class AtomicFileCounter : IDisposable
         locker.Dispose();
         accessor.Dispose();
         file.Dispose();
+        stream?.Dispose();
     }
 }
