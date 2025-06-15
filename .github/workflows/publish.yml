@@ -12,15 +12,22 @@ jobs:
     runs-on: ubuntu-latest
     name: Build Test Pack and Publish
     steps:
-
-      - name: Checkout
-        uses: actions/checkout@v4
-
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: |
             9.0.x
+
+      - name: Setup Mono runtime
+        run: |
+          sudo gpg --homedir /tmp --no-default-keyring --keyring /usr/share/keyrings/mono-official-archive-keyring.gpg --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF
+          echo "deb [signed-by=/usr/share/keyrings/mono-official-archive-keyring.gpg] https://download.mono-project.com/repo/debian stable-buster main" | sudo tee /etc/apt/sources.list.d/mono-official-stable.list
+          sudo apt install dirmngr ca-certificates gnupg
+          sudo apt update
+          sudo apt install mono-complete
+
+      - name: Checkout
+        uses: actions/checkout@v4
 
       - name: Test - Debug
         run: dotnet test src/Interprocess.sln
@@ -32,4 +39,4 @@ jobs:
         run: dotnet pack -c Release --no-build --output . --version-suffix ${{github.run_number}} src/Interprocess/Interprocess.csproj 
 
       - name: Push
-        run: dotnet nuget push Cloudtoid.Interprocess.*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_TOKEN }}
+        run: dotnet nuget push YellowDogMan.Cloudtoid.Interprocess.*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_TOKEN }}

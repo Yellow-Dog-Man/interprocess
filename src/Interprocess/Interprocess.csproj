@@ -12,7 +12,7 @@
     <PackageId>YellowDogMan.Cloudtoid.Interprocess</PackageId>
     <Title>YellowDogMan.Cloudtoid.Interprocess</Title>
     <Authors>pedram@rezaei.us;YellowDogManStudios</Authors>
-    <Company>YellowDogManStudios</Company>
+    <Company>YellowDogMan Studios</Company>
     <PackageDescription>A cross-platform shared memory queue for fast interprocess messaging.</PackageDescription>
     <Copyright>Copyright (c) Cloudtoid</Copyright>
     <RepositoryUrl>https://github.com/Yellow-Dog-Man/interprocess/</RepositoryUrl>
