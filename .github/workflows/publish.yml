@@ -2,12 +2,18 @@ name: publish
 
 on:
   workflow_dispatch:
+    inputs:
+      version:
+        description: 'Assembly Version'
+        required: true
 
   release:
     types: [published]
 
 jobs:
   build:
+    env:
+      VERSION: ${{ github.event.release.tag_name || github.event.inputs.version }}
 
     runs-on: ubuntu-latest
     name: Build Test Pack and Publish
