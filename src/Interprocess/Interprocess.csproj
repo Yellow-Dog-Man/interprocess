@@ -23,8 +23,5 @@
     <VersionSuffix Condition=" '$(VersionSuffix)'=='' ">0</VersionSuffix>
     <PackageVersion>2.0.$(VersionSuffix)-ydm</PackageVersion>
   </PropertyGroup>
-  <ItemGroup>
-    <ProjectReference Include="../../framework/src/Cloudtoid.Framework/Cloudtoid.Framework.csproj" />
-  </ItemGroup>
 
 </Project>

@@ -20,6 +20,7 @@
     <PackageVersion Include="System.Memory" Version="4.6.3" />
     <PackageVersion Include="Microsoft.Extensions.Logging" Version="9.0.0" />
     <PackageVersion Include="PolySharp" Version="1.15.0" />
+    <PackageVersion Include="YellowDogMan.Cloudtoid.Framework" Version="1.0.3-ydm" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="System.Memory" />
@@ -28,7 +29,7 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
-    <!-- <PackageReference Include="Cloudtoid.Framework" /> -->
+    <PackageReference Include="YellowDogMan.Cloudtoid.Framework" />
     <!-- <ProjectReference Include="../../framework/src/Cloudtoid.Framework/Cloudtoid.Framework.csproj" /> -->
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
     <PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers">
