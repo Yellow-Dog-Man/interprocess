@@ -27,13 +27,22 @@ internal sealed class Publisher : Queue, IPublisher
             {
                 try
                 {
+                    // Write the header first with the bodyLength included. This is important, because writing the
+                    // header is not an atomic operation, so we want the bodyLength to be staged and ready first,
+                    // because once we write ReadyToBeConsumedState, the Subscriber can start processing the message
+                    // before we write out the bodyLength, resulting in corruption of the queue
+                    Buffer.Write(
+                        new MessageHeader(MessageHeader.WritingState, bodyLength),
+                        writeOffset);
+
                     // write the message body
                     Buffer.Write(message, GetMessageBodyOffset(writeOffset));
 
-                    // write the message header
-                    Buffer.Write(
-                        new MessageHeader(MessageHeader.ReadyToBeConsumedState, bodyLength),
-                        writeOffset);
+                    // Update the message header with ReadyToBeConsumedState since we've written the entire body of the message.
+                    // The bodyLength is already staged form initial write, so we don't need to write it again (in fact, we shouldn't,
+                    // because it's technically possible that the Subscriber will process the message and zero out the data before
+                    // we write the bodyLength, meaning we'd write the bodyLength to already zeroed out buffer, since this is not atomic
+                    Buffer.Write(MessageHeader.ReadyToBeConsumedState, writeOffset);
                 }
                 catch
                 {
