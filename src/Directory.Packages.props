@@ -10,17 +10,18 @@
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="9.0.0" />
     <PackageVersion Include="Microsoft.Extensions.Logging.Console" Version="9.0.0" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
-    <PackageVersion Include="Microsoft.VisualStudio.Threading.Analyzers" Version="17.12.19" />
+    <!-- <PackageVersion Include="Microsoft.VisualStudio.Threading.Analyzers" Version="17.12.19" /> -->
     <PackageVersion Include="NSubstitute" Version="5.3.0" />
-    <PackageVersion Include="Roslynator.Analyzers" Version="4.12.10" />
-    <PackageVersion Include="Roslynator.Formatting.Analyzers" Version="4.12.10" />
-    <PackageVersion Include="StyleCop.Analyzers" Version="1.2.0-beta.556" />
+    <!-- <PackageVersion Include="Roslynator.Analyzers" Version="4.12.10" /> -->
+    <!-- <PackageVersion Include="Roslynator.Formatting.Analyzers" Version="4.12.10" /> -->
+    <!-- <PackageVersion Include="StyleCop.Analyzers" Version="1.2.0-beta.556" /> -->
     <PackageVersion Include="xunit.runner.visualstudio" Version="3.0.1" />
     <PackageVersion Include="xunit" Version="2.9.3" />
     <PackageVersion Include="System.Memory" Version="4.6.3" />
     <PackageVersion Include="Microsoft.Extensions.Logging" Version="9.0.0" />
     <PackageVersion Include="PolySharp" Version="1.15.0" />
     <PackageVersion Include="YellowDogMan.Cloudtoid.Framework" Version="1.0.4-ydm" />
+    <!-- <PackageVersion Include="System.Runtime" Version="4.1.2" /> -->
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="System.Memory" />
@@ -30,13 +31,14 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
     <PackageReference Include="YellowDogMan.Cloudtoid.Framework" />
-    <!-- <ProjectReference Include="../../framework/src/Cloudtoid.Framework/Cloudtoid.Framework.csproj" /> -->
+    <!-- <ProjectReference
+    Include="../../framework/src/Cloudtoid.Framework/Cloudtoid.Framework.csproj" /> -->
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" />
-    <PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers">
+    <!-- <PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="StyleCop.Analyzers">
+    </PackageReference> -->
+    <!-- <PackageReference Include="StyleCop.Analyzers">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
     </PackageReference>
@@ -47,6 +49,6 @@
     <PackageReference Include="Roslynator.Formatting.Analyzers">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
-    </PackageReference>
+    </PackageReference> -->
   </ItemGroup>
 </Project>

@@ -5,6 +5,7 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <RootNamespace>Cloudtoid.Interprocess</RootNamespace>
     <AssemblyName>YellowDogMan.Cloudtoid.Interprocess</AssemblyName>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
 
   <!-- NuGet Packaging -->
