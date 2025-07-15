@@ -2,7 +2,7 @@ namespace Cloudtoid.Interprocess.Tests;
 
 public class UniquePathFixture : IDisposable
 {
-    private static readonly string Root = System.IO.Path.GetTempPath();
+    private static readonly string Root = Util.MemoryFilePath;
 
     public UniquePathFixture()
     {

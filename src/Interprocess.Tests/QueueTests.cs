@@ -32,7 +32,8 @@ public class QueueTests : IClassFixture<UniquePathFixture>
         var factory = new QueueFactory();
         var options = new QueueOptions(
             queueName: "my-queue",
-            capacity: 1024 * 1024);
+            capacity: 1024 * 1024,
+            deleteOnDispose: true);
 
         using var publisher = factory.CreatePublisher(options);
         publisher.TryEnqueue(message);
@@ -65,7 +66,8 @@ public class QueueTests : IClassFixture<UniquePathFixture>
 
         var options = new QueueOptions(
             queueName: "my-queue",
-            capacity: 1024 * 1024);
+            capacity: 1024 * 1024,
+            deleteOnDispose: true);
 
         using var publisher = factory.CreatePublisher(options);
         publisher.TryEnqueue(message);
@@ -257,10 +259,10 @@ public class QueueTests : IClassFixture<UniquePathFixture>
     }
 
     private IPublisher CreatePublisher(long capacity) =>
-        queueFactory.CreatePublisher(new("qn", fixture.Path, capacity));
+        queueFactory.CreatePublisher(new("qn", fixture.Path, capacity, true));
 
     private ISubscriber CreateSubscriber(long capacity) =>
-        queueFactory.CreateSubscriber(new("qn", fixture.Path, capacity));
+        queueFactory.CreateSubscriber(new("qn", fixture.Path, capacity, false));
 
     private sealed class DeadlockCausingPublisher(QueueOptions options, ILoggerFactory loggerFactory) :
         Queue(options, loggerFactory),
