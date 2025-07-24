@@ -2,6 +2,7 @@ using System.Runtime.InteropServices;
 using Cloudtoid.Interprocess.Semaphore.Linux;
 using Cloudtoid.Interprocess.Semaphore.MacOS;
 using Cloudtoid.Interprocess.Semaphore.Windows;
+using Cloudtoid.Interprocess.Semaphore.Wine;
 
 namespace Cloudtoid.Interprocess;
 
@@ -13,6 +14,9 @@ internal static class InterprocessSemaphore
 {
     internal static IInterprocessSemaphoreWaiter CreateWaiter(string name)
     {
+        if (Util.IsWine)
+            return new SemaphoreWine(name);
+
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             return new SemaphoreWindows(name);
 
@@ -24,6 +28,9 @@ internal static class InterprocessSemaphore
 
     internal static IInterprocessSemaphoreReleaser CreateReleaser(string name)
     {
+        if (Util.IsWine)
+            return new SemaphoreWine(name);
+
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             return new SemaphoreWindows(name);
 
