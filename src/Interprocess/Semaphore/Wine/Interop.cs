@@ -5,6 +5,21 @@ namespace Cloudtoid.Interprocess.Semaphore.Wine;
 
 internal static partial class Interop
 {
+    internal static readonly bool ShmBridgeAvailable;
+
+    static Interop()
+    {
+        try
+        {
+            SemaphoreClose(IntPtr.Zero);
+            ShmBridgeAvailable = true;
+        }
+        catch
+        {
+            // Must fall back to Windows semaphores
+        }
+    }
+
     private const string Lib = "shmbridge.dll.so";
     private const uint SEMVALUEMAX = 32767;
     private const int OCREAT = 0x040;    // Create the semaphore if it does not exist

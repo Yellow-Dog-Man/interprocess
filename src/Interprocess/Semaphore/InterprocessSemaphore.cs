@@ -14,7 +14,7 @@ internal static class InterprocessSemaphore
 {
     internal static IInterprocessSemaphoreWaiter CreateWaiter(string name)
     {
-        if (Util.IsWine)
+        if (UseWine)
             return new SemaphoreWine(name);
 
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
@@ -28,7 +28,7 @@ internal static class InterprocessSemaphore
 
     internal static IInterprocessSemaphoreReleaser CreateReleaser(string name)
     {
-        if (Util.IsWine)
+        if (UseWine)
             return new SemaphoreWine(name);
 
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
@@ -39,4 +39,6 @@ internal static class InterprocessSemaphore
 
         return new SemaphoreLinux(name);
     }
+
+    private static readonly bool UseWine = Util.IsWine && Semaphore.Wine.Interop.ShmBridgeAvailable;
 }
