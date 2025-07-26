@@ -37,7 +37,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           submodules: true
-      
+
       - if: runner.os == 'Linux'
         name: Fetch Wine-ShmBridge
         run: wget --content-disposition -P "src/Interprocess/runtimes/win-x64/native" "${{env.WINE_SHMBRIDGE_LINK}}"
