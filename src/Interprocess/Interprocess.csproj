@@ -24,4 +24,8 @@
     <PackageVersion>$(Version)</PackageVersion>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Include="runtimes/win-x64/native/shmbridge.dll.so" Pack="true" PackagePath="runtimes/win-x64/native/" />
+  </ItemGroup>
+
 </Project>
