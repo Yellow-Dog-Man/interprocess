@@ -40,7 +40,7 @@ jobs:
       
       - if: runner.os == 'Linux'
         name: Fetch Wine-ShmBridge
-        run: wget --content-disposition -O "src/Interprocess/runtimes/win-x64/native" "${{env.WINE_SHMBRIDGE_LINK}}"
+        run: wget --content-disposition -P "src/Interprocess/runtimes/win-x64/native" "${{env.WINE_SHMBRIDGE_LINK}}"
 
       - if: runner.os == 'Windows'
         name: Fetch Wine-ShmBridge
