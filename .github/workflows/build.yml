@@ -9,6 +9,8 @@ on:
 
 jobs:
   build:
+    env:
+      WINE_SHMBRIDGE_LINK: https://github.com/Yellow-Dog-Man/Wine-ShmBridge/releases/download/1.0.0/shmbridge.dll.so
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -36,5 +38,20 @@ jobs:
         with:
           submodules: true
 
+      - name: Fetch Wine-ShmBridge
+        run: wget --content-disposition -O "src/Interprocess/runtimes/win-x64/native" "${{env.WINE_SHMBRIDGE_LINK}}"
+
       - name: Build and Test
         run: dotnet test src/Interprocess.sln
+
+      - name: Build - Release
+        run: dotnet build -c Release src/Interprocess.sln
+
+      - name: Pack
+        run: dotnet pack -c Release --no-build --output . --version-suffix ${{github.run_number}} src/Interprocess/Interprocess.csproj
+
+      - name: Put a big red bow on it
+        uses: actions/upload-artifact@v4
+        with:
+          name: SharpPipe
+          path: src/Interprocess/bin/Release/*.nupkg
