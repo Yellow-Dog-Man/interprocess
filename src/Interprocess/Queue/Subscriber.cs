@@ -7,6 +7,8 @@ internal sealed class Subscriber : Queue, ISubscriber
     private readonly CountdownEvent countdownEvent = new(1);
     private readonly IInterprocessSemaphoreWaiter signal;
 
+    private int _disposed;
+
     internal Subscriber(QueueOptions options, ILoggerFactory loggerFactory)
         : base(options, loggerFactory) => signal = InterprocessSemaphore.CreateWaiter(options.MemoryViewName);
 
@@ -24,6 +26,12 @@ internal sealed class Subscriber : Queue, ISubscriber
 
     protected override void Dispose(bool disposing)
     {
+        // Prevent double cancellation in case Dispose is called multiple times
+        if (Interlocked.CompareExchange(ref _disposed, 1, 0) != 0)
+        {
+            return;
+        }
+
         // drain the Dequeue/TryDequeue requests
         cancellationSource.Cancel();
         countdownEvent.Signal();
