@@ -23,7 +23,17 @@ internal abstract class Queue : IDisposable
         // must clean up if the application is being closed but finalizer is not called.
         // this happens in cases such as closing a console app by pressing the X button.
         AppDomain.CurrentDomain.ProcessExit += OnAppExit;
-        Console.CancelKeyPress += OnAppExit;
+        try
+        {
+            Console.CancelKeyPress += OnAppExit;
+        }
+        catch (NotSupportedException)
+        {
+            // ignored. this happens in Unity IL2CPP due to static marshaling nonsense.
+            // we can't patch System.Console+WindowsConsole::DoWindowsConsoleCancelEvent
+            // to add 'MonoPInvokeCallback' so we just have to ignore here.
+            // this particular event is unlikely to trigger in Unity anyway
+        }
     }
 
     ~Queue() =>
