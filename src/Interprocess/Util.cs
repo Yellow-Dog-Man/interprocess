@@ -13,7 +13,7 @@ internal static class Util
     private const string LINUX_SHM_DIR = "/dev/shm";
     static Util()
     {
-        bool isLinux = Environment.OSVersion.Platform == PlatformID.Unix;
+        bool isLinux = RuntimeInformation.IsOSPlatform(OSPlatform.Linux);
         IsMonoUnderLinux = isLinux && Type.GetType("Mono.Runtime") is not null;
 
         try
