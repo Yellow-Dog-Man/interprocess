@@ -1,22 +1,19 @@
-using SysSemaphore = System.Threading.Semaphore;
+using Microsoft.Win32.SafeHandles;
 
 namespace Cloudtoid.Interprocess.Semaphore.Windows;
 
 // just a wrapper over the Windows named semaphore
+// ideally, .NET's own semaphore implementation would be used however on IL2CPP support for named semaphores are missing.
 internal sealed class SemaphoreWindows : IInterprocessSemaphoreWaiter, IInterprocessSemaphoreReleaser
 {
     private const string HandleNamePrefix = @"Global\CT.IP.";
-    private readonly SysSemaphore handle;
+    private readonly SafeWaitHandle handle;
 
-    internal SemaphoreWindows(string name) =>
-        handle = new SysSemaphore(0, int.MaxValue, HandleNamePrefix + name);
+    internal SemaphoreWindows(string name) => handle = Interop.CreateOrOpenSemaphore(HandleNamePrefix + name);
 
-    public void Dispose() =>
-        handle.Dispose();
+    public void Dispose() => handle.Dispose();
 
-    public void Release() =>
-        handle.Release();
+    public void Release() => Interop.Release(handle);
 
-    public bool Wait(int millisecondsTimeout) =>
-        handle.WaitOne(millisecondsTimeout);
+    public bool Wait(int millisecondsTimeout) => Interop.Wait(handle, millisecondsTimeout);
 }
