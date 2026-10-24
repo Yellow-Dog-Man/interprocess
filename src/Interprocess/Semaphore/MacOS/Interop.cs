@@ -21,6 +21,7 @@ internal static partial class Interop
     private const int EAGAIN = 35;       // The semaphore is already locked.
     private const int ENAMETOOLONG = 63; // The specified semaphore name is too long
     private const int EOVERFLOW = 84;    // The maximum allowable value for a semaphore would be exceeded.
+    private const int ETIMEDOUT = 60;    // The call timed out before the semaphore could be locked.
 
     private static readonly IntPtr SemFailed = new(-1);
 

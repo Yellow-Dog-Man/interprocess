@@ -1,20 +1,20 @@
-namespace Cloudtoid.Interprocess.Semaphore.Wine;
+namespace Cloudtoid.Interprocess.Semaphore.WineMacOS;
 
-internal sealed class SemaphoreWine : IInterprocessSemaphoreWaiter, IInterprocessSemaphoreReleaser
+internal sealed class SemaphoreWineMacOS : IInterprocessSemaphoreWaiter, IInterprocessSemaphoreReleaser
 {
     private const string HandleNamePrefix = "/ct.ip.";
     private readonly string name;
     private readonly bool deleteOnDispose;
     private readonly IntPtr handle;
 
-    internal SemaphoreWine(string name, bool deleteOnDispose = false)
+    internal SemaphoreWineMacOS(string name, bool deleteOnDispose = false)
     {
         this.name = name = HandleNamePrefix + name;
         this.deleteOnDispose = deleteOnDispose;
         handle = Interop.CreateOrOpenSemaphore(name, 0);
     }
 
-    ~SemaphoreWine() =>
+    ~SemaphoreWineMacOS() =>
         DisposeCore();
 
     public void Release() =>

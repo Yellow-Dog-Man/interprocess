@@ -10,7 +10,10 @@ on:
 jobs:
   build:
     env:
-      WINE_SHMBRIDGE_LINK: https://github.com/Yellow-Dog-Man/Wine-ShmBridge/releases/download/1.0.0/shmbridge.dll.so
+      WINE_SHMBRIDGE_LINK_DLLSO: https://github.com/Yellow-Dog-Man/Wine-ShmBridge/releases/download/1.0.0/shmbridge.dll.so
+      WINE_SHMBRIDGE_LINK_OSXSO: https://github.com/nullobsi/Wine-ShmBridge/releases/download/test-8/shmbridge-osx.so
+      WINE_SHMBRIDGE_LINK_OSXDLL: https://github.com/nullobsi/Wine-ShmBridge/releases/download/test-8/shmbridge-osx.dll
+
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -40,11 +43,17 @@ jobs:
 
       - if: runner.os == 'Linux'
         name: Fetch Wine-ShmBridge
-        run: wget --content-disposition -P "src/Interprocess/runtimes/win-x64/native" "${{env.WINE_SHMBRIDGE_LINK}}"
+        run: |
+          wget --content-disposition -P "src/Interprocess/runtimes/win-x64/native" "${{env.WINE_SHMBRIDGE_LINK_DLLSO}}"
+          wget --content-disposition -P "src/Interprocess/runtimes/win-x64/native" "${{env.WINE_SHMBRIDGE_LINK_OSXSO}}"
+          wget --content-disposition -P "src/Interprocess/runtimes/win-x64/native" "${{env.WINE_SHMBRIDGE_LINK_OSXDLL}}"
 
       - if: runner.os == 'Windows'
         name: Fetch Wine-ShmBridge
-        run: Invoke-WebRequest "${{env.WINE_SHMBRIDGE_LINK}}" -OutFile .\src\Interprocess\runtimes\win-x64\native\shmbridge.dll.so
+        run: |
+          Invoke-WebRequest "${{env.WINE_SHMBRIDGE_LINK_DLLSO}}" -OutFile .\src\Interprocess\runtimes\win-x64\native\shmbridge.dll.so
+          Invoke-WebRequest "${{env.WINE_SHMBRIDGE_LINK_OSXSO}}" -OutFile .\src\Interprocess\runtimes\win-x64\native\shmbridge-osx.so
+          Invoke-WebRequest "${{env.WINE_SHMBRIDGE_LINK_OSXDLL}}" -OutFile .\src\Interprocess\runtimes\win-x64\native\shmbridge-osx.dll
 
       - name: Build and Test
         run: dotnet test src/Interprocess.sln

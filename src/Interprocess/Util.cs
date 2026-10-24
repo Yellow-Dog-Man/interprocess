@@ -7,7 +7,9 @@ namespace Cloudtoid.Interprocess;
 internal static class Util
 {
     internal static readonly bool IsMonoUnderLinux;
-    internal static readonly bool IsWine;
+    internal static readonly bool IsWineUnderLinux;
+    internal static readonly bool IsWineUnderMacOS;
+    internal static bool IsWine => IsWineUnderLinux || IsWineUnderMacOS;
     internal static readonly string MemoryFilePath;
 
     private const string LINUX_SHM_DIR = "/dev/shm";
@@ -18,14 +20,28 @@ internal static class Util
 
         try
         {
-            wine_get_version();
-            IsWine = true;
+            // I was scared off of "out string" or "ref string".
+            // At least this behavior is well-known instead of magic
+            // compiler shenanigans.
+            IntPtr sysname_ptr = IntPtr.Zero;
+            IntPtr release_ptr = IntPtr.Zero;
+
+            wine_get_host_version(ref sysname_ptr, ref release_ptr);
+
+            if (sysname_ptr != IntPtr.Zero) {
+                // PtrToStringAnsi copies the string from native-land
+                // to managed-land.
+                string sysname = Marshal.PtrToStringAnsi(sysname_ptr);
+
+                if (sysname == "Linux") IsWineUnderLinux = true;
+                if (sysname == "Darwin") IsWineUnderMacOS = true;
+            }
         }
         catch
         {
         }
 
-        if (isLinux || IsWine)
+        if (isLinux || IsWineUnderLinux)
             MemoryFilePath = Path.GetFullPath(Path.Combine(LINUX_SHM_DIR, ".cloudtoid", "interprocess", "mmf"));
         else
             MemoryFilePath = Path.GetTempPath();
@@ -54,5 +70,5 @@ internal static class Util
     }
 
     [DllImport("ntdll.dll", CharSet = CharSet.Ansi)]
-    private static extern string wine_get_version();
+    private static extern void wine_get_host_version(ref IntPtr sysname, ref IntPtr release);
 }

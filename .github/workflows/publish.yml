@@ -14,7 +14,9 @@ jobs:
   build:
     env:
       VERSION: ${{ github.event.release.tag_name || github.event.inputs.version }}
-      WINE_SHMBRIDGE_LINK: https://github.com/Yellow-Dog-Man/Wine-ShmBridge/releases/download/1.0.0/shmbridge.dll.so
+      WINE_SHMBRIDGE_LINK_DLLSO: https://github.com/Yellow-Dog-Man/Wine-ShmBridge/releases/download/1.0.0/shmbridge.dll.so
+      WINE_SHMBRIDGE_LINK_OSXSO: https://github.com/nullobsi/Wine-ShmBridge/releases/download/test-8/shmbridge-osx.so
+      WINE_SHMBRIDGE_LINK_OSXDLL: https://github.com/nullobsi/Wine-ShmBridge/releases/download/test-8/shmbridge-osx.dll
 
     runs-on: ubuntu-latest
     name: Build Test Pack and Publish
@@ -39,7 +41,11 @@ jobs:
           submodules: true
       
       - name: Fetch Wine-ShmBridge
-        run: wget --content-disposition -P "src/Interprocess/runtimes/win-x64/native" "${{env.WINE_SHMBRIDGE_LINK}}"
+        run: |
+          wget --content-disposition -P "src/Interprocess/runtimes/win-x64/native" "${{env.WINE_SHMBRIDGE_LINK_DLLSO}}"
+          wget --content-disposition -P "src/Interprocess/runtimes/win-x64/native" "${{env.WINE_SHMBRIDGE_LINK_OSXSO}}"
+          wget --content-disposition -P "src/Interprocess/runtimes/win-x64/native" "${{env.WINE_SHMBRIDGE_LINK_OSXDLL}}"
+
 
       - name: Test - Debug
         run: dotnet test src/Interprocess.sln
